@@ -1,7 +1,7 @@
 {
-  "name": "tree-difference",
+  "name": "graph-difference",
   "version": "0.0.1",
-  "description": "find the subtree that connects one tree node with another",
+  "description": "find the subgraph between two nodes in a directed acyclic graph",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha -R spec"

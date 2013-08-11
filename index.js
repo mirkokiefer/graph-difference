@@ -8,7 +8,7 @@ var findAncestors = function(from, to, readParents, cb) {
   }, cb)
 }
 
-var treeDiff = function(from, to, readParents, cb) {
+var graphDiff = function(from, to, readParents, cb) {
   findAncestors(from, to, readParents, function(err, ancestors) {
     var nodeDiff = []
     var parents = [to]
@@ -31,7 +31,7 @@ var treeDiff = function(from, to, readParents, cb) {
       findAncestor(filteredParents, readParents, function(err, parentsAncestor) {
         var reduce = function(state, each, cb) {
           var newFrom = state.length ? from.concat(parentsAncestor) : from
-          treeDiff(newFrom, each, readParents, function(err, res) {
+          graphDiff(newFrom, each, readParents, function(err, res) {
             cb(null, state.concat(res))
           })
         }
@@ -44,5 +44,5 @@ var treeDiff = function(from, to, readParents, cb) {
 }
 
 module.exports = function(from, to, readParents, cb) {
-  treeDiff([from], to, readParents, cb)
+  graphDiff([from], to, readParents, cb)
 }

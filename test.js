@@ -1,6 +1,6 @@
 
 var assert = require('assert')
-var treeDiff = require('./index')
+var graphDiff = require('./index')
 
 var nodes = {
   1: [],
@@ -45,10 +45,10 @@ var tests = [
   {from: 1, to: 16, expected: [16,15,12,11,10,7,6,3,2,5,4,9,8,14,13]}
 ]
 
-describe('tree-difference', function() {
+describe('graph-difference', function() {
   tests.forEach(function(each, i) {
     it('should run test ' + i, function(done) {
-      treeDiff(each.from, each.to, readParents, function(err, res) {
+      graphDiff(each.from, each.to, readParents, function(err, res) {
         assert.deepEqual(res, each.expected)
         done()
       })
