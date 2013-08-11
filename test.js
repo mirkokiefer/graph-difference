@@ -28,7 +28,9 @@ var readParents = function(id, cb) {
 
 var tests = [
   {from: 7, to: 9, expected: [9, 8]},
-  {from: 6, to: 7, expected: [7]}
+  {from: 6, to: 7, expected: [7]},
+  {from: 5, to: 7, expected: [7, 6, 3]},
+  {from: 4, to: 7, expected: [7, 6, 3, 5]}
 ]
 
 describe('tree-difference', function() {

@@ -16,11 +16,9 @@ var treeDiff = function(from, to, readParents, cb) {
         cb()
       })
     }, function() {
-      if (parents.length == 1) {
-        return cb(null, nodeDiff)
-      }
+      var filteredParents = parents.filter(function(each) { return each != ancestor })
       var recurse = function(each, cb) { treeDiff(from, each, readParents, cb) }
-      async.map(parents, recurse, function(err, res) {
+      async.map(filteredParents, recurse, function(err, res) {
         res.forEach(function(each) {
           nodeDiff = nodeDiff.concat(each)
         })
