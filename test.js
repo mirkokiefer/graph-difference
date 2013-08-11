@@ -16,9 +16,9 @@ var nodes = {
 
 /* the graph:
 
-    4-5-8-9   
-   /   \
-1-2-3---6-7
+    4-5-8-9    11-12
+   /   \   \  /     \
+1-2-3---6-7-10-13-14-15-16
 
 */
 
@@ -27,10 +27,13 @@ var readParents = function(id, cb) {
 }
 
 var tests = [
+  {from: 8, to: 9, expected: [9]},
   {from: 7, to: 9, expected: [9, 8]},
   {from: 6, to: 7, expected: [7]},
   {from: 5, to: 7, expected: [7, 6, 3]},
-  {from: 4, to: 7, expected: [7, 6, 3, 5]}
+  {from: 4, to: 7, expected: [7, 6, 3, 5]},
+  {from: 1, to: 7, expected: [7, 6, 3, 2, 5, 4]},
+  {from: 1, to: 9, expected: [9, 8, 5, 4, 2]}
 ]
 
 describe('tree-difference', function() {

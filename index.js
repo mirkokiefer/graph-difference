@@ -2,12 +2,18 @@
 var findAncestor = require('ancestor')
 var async = require('async')
 
+var findAncestors = function(from, to, readParents, cb) {
+  async.map(from, function(each, cb) {
+    findAncestor([each, to], readParents, cb)
+  }, cb)
+}
+
 var treeDiff = function(from, to, readParents, cb) {
-  findAncestor([from, to], readParents, function(err, ancestor) {
+  findAncestors(from, to, readParents, function(err, ancestors) {
     var nodeDiff = []
     var parents = [to]
     var whileCondition = function() {
-      return (parents.length == 1) && (parents[0] != ancestor)
+      return (parents.length == 1) && (ancestors.indexOf(parents[0]) == -1)
     }
     async.whilst(whileCondition, function(cb) {
       nodeDiff.push(parents[0])
@@ -19,17 +25,24 @@ var treeDiff = function(from, to, readParents, cb) {
       if (parents.length == 1) {
         return cb(null, nodeDiff)
       }
-      var filteredParents = parents.filter(function(each) { return each != ancestor })
-      var reduce = function(state, each, cb) {
-        treeDiff(from, each, readParents, function(err, res) {
-          cb(null, state.concat(res))
+      var filteredParents = parents.filter(function(each) {
+        return ancestors.indexOf(each) == -1
+      })
+      findAncestor(filteredParents, readParents, function(err, parentsAncestor) {
+        var reduce = function(state, each, cb) {
+          var newFrom = state.length ? from.concat(parentsAncestor) : from
+          treeDiff(newFrom, each, readParents, function(err, res) {
+            cb(null, state.concat(res))
+          })
+        }
+        async.reduce(filteredParents, [], reduce, function(err, res) {
+          cb(null, nodeDiff.concat(res))
         })
-      }
-      async.reduce(filteredParents, [], reduce, function(err, res) {
-        cb(null, nodeDiff.concat(res))
       })
     })
   })
 }
 
-module.exports = treeDiff
+module.exports = function(from, to, readParents, cb) {
+  treeDiff([from], to, readParents, cb)
+}

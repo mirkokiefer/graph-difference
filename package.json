@@ -4,7 +4,7 @@
   "description": "find the subtree that connects one tree node with another",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha"
+    "test": "node_modules/.bin/mocha -R spec"
   },
   "keywords": [
     "tree"
@@ -12,7 +12,10 @@
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
   "license": "BSD",
   "dependencies": {
-    "ancestor": "~0.1.0",
+    "ancestor": "~0.1.2",
     "async": "~0.2.9"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.0"
   }
 }
