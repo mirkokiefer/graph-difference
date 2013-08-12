@@ -5,7 +5,7 @@
 
 Find the subgraph difference between two nodes in a directed acyclic graph.
 
-Given a node `A` the algorithm finds all nodes that are ancestors of `B` but are not ancestors from `A`.
+Given a `node A` the algorithm finds all nodes that are ancestors of `node B` but are not ancestors from `node A`.
 
 ##Example
 
