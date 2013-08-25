@@ -8,6 +8,8 @@ var findAncestors = function(from, to, readParents, cb) {
   }, cb)
 }
 
+// this really has to be rewritten to be tail recursive or stack-based
+// I also want the result to be analog to a breadth-first walk
 var graphDiff = function(from, to, readParents, cb) {
   findAncestors(from, to, readParents, function(err, ancestors) {
     var nodeDiff = []
