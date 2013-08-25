@@ -47,7 +47,7 @@ var tests = [
 
 describe('graph-difference', function() {
   tests.forEach(function(each, i) {
-    it('should run test ' + i, function(done) {
+    it('diff from ' + each.from + ' to ' + each.to + ' test(' + i + ')', function(done) {
       graphDiff(each.from, each.to, readParents, function(err, res) {
         assert.deepEqual(res, each.expected)
         done()
