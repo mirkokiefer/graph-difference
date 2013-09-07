@@ -26,7 +26,7 @@ var graphDiff = function(from, to, readParents, cb) {
     async.whilst(whileCondition, function(cb) {
       nodeDiff.push(parents[0])
       readParents(parents[0], function(err, newParents) {
-        parents = newParents
+        parents = newParents || []
         cb()
       })
     }, function() {
