@@ -1,6 +1,6 @@
 {
   "name": "graph-difference",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "find the subgraph between two nodes in a directed acyclic graph",
   "main": "index.js",
   "scripts": {
