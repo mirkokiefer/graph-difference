@@ -3,9 +3,15 @@ var findAncestor = require('ancestor')
 var async = require('async')
 
 var findAncestors = function(from, to, readParents, cb) {
-  async.map(from, function(each, cb) {
-    findAncestor([each, to], readParents, cb)
-  }, cb)
+  var ancestors = []
+  async.each(from, function(each, cb) {
+    findAncestor([each, to], readParents, function(err, res) {
+      if (res) ancestors.push(res)
+      cb()
+    })
+  }, function() {
+    cb(null, ancestors)
+  })
 }
 
 // this really has to be rewritten to be tail recursive or stack-based
@@ -15,7 +21,7 @@ var graphDiff = function(from, to, readParents, cb) {
     var nodeDiff = []
     var parents = [to]
     var whileCondition = function() {
-      return (parents.length == 1) && (ancestors.indexOf(parents[0]) == -1)
+      return parents.length == 1 && ancestors.indexOf(parents[0]) == -1
     }
     async.whilst(whileCondition, function(cb) {
       nodeDiff.push(parents[0])

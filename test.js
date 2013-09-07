@@ -30,7 +30,11 @@ var nodes = {
 */
 
 var readParents = function(id, cb) {
-  cb(null, nodes[id])
+  process.nextTick(function() {
+    var parents = nodes[id]
+    if (parents === undefined) return cb(new Error('node not found'))
+    cb(null, parents)    
+  })
 }
 
 var tests = [
@@ -42,7 +46,8 @@ var tests = [
   {from: 1, to: 7, expected: [7, 6, 3, 2, 5, 4]},
   {from: 1, to: 9, expected: [9, 8, 5, 4, 2]},
   {from: 9, to: 16, expected: [16,15,12,11,10,7,6,3,14,13]},
-  {from: 1, to: 16, expected: [16,15,12,11,10,7,6,3,2,5,4,9,8,14,13]}
+  {from: 1, to: 16, expected: [16,15,12,11,10,7,6,3,2,5,4,9,8,14,13]},
+  {from: null, to: 16, expected: [16,15,12,11,10,7,6,3,2,1,5,4,9,8,14,13]}
 ]
 
 describe('graph-difference', function() {
