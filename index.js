@@ -2,7 +2,7 @@
 var findAncestor = require('ancestor')
 var async = require('async')
 
-var findAncestors = function(from, to, readParents, cb) {
+function findAncestors(from, to, readParents, cb) {
   var ancestors = []
   async.each(from, function(each, cb) {
     findAncestor([each, to], readParents, function(err, res) {
@@ -16,11 +16,11 @@ var findAncestors = function(from, to, readParents, cb) {
 
 // this really has to be rewritten to be tail recursive or stack-based
 // I also want the result to be analog to a breadth-first walk
-var graphDiff = function(from, to, readParents, cb) {
+function graphDiff(from, to, readParents, cb) {
   findAncestors(from, to, readParents, function(err, ancestors) {
     var nodeDiff = []
     var parents = [to]
-    var whileCondition = function() {
+    function whileCondition() {
       return parents.length == 1 && ancestors.indexOf(parents[0]) == -1
     }
     async.whilst(whileCondition, function(cb) {
