@@ -1,8 +1,7 @@
+import assert from 'assert'
+import graphDiff from './index.js'
 
-var assert = require('assert')
-var graphDiff = require('./index')
-
-var nodes = {
+const nodes = {
   1: [],
   2: [1],
   3: [2],
@@ -19,33 +18,16 @@ var nodes = {
   14: [13],
   15: [12, 14],
   16: [15],
-
   17: [],
   18: [],
   19: [17, 18],
   20: [19]
 }
 
-/* the graph:
+const readParents = (id, cb) =>
+  process.nextTick(() => cb(null, nodes[id] || []))
 
-    4-5-8-9    11-12
-   /   \   \  /     \
-1-2-3---6-7-10-13-14-15-16
-
-18
-  \
-17-19-20
-*/
-
-var readParents = function(id, cb) {
-  process.nextTick(function() {
-    var parents = nodes[id]
-    if (parents === undefined) return cb(new Error('node not found'))
-    cb(null, parents)    
-  })
-}
-
-var tests = [
+const tests = [
   {from: 8, to: 9, expected: [9]},
   {from: 7, to: 9, expected: [9, 8]},
   {from: 6, to: 7, expected: [7]},
@@ -56,16 +38,16 @@ var tests = [
   {from: 9, to: 16, expected: [16,15,12,11,10,7,6,3,14,13]},
   {from: 1, to: 16, expected: [16,15,12,11,10,7,6,3,2,5,4,9,8,14,13]},
   {from: null, to: 16, expected: [16,15,12,11,10,7,6,3,2,1,5,4,9,8,14,13]},
-  {from: 7, to: 20, expected: [20, 19, 17, 18]}
+  {from: 7, to: 20, expected: [20,19,17,18]}
 ]
 
-describe('graph-difference', function() {
-  tests.forEach(function(each, i) {
-    it('diff from ' + each.from + ' to ' + each.to + ' test(' + i + ')', function(done) {
-      graphDiff(each.from, each.to, readParents, function(err, res) {
-        assert.deepEqual(res, each.expected)
+describe('graph-difference', () => {
+  tests.forEach(({from, to, expected}, i) =>
+    it(`diff from ${from} to ${to} (#${i})`, done =>
+      graphDiff(from, to, readParents, (err, res) => {
+        assert.deepEqual(res, expected)
         done()
       })
-    })
-  })
+    )
+  )
 })

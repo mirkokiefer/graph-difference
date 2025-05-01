@@ -1,56 +1,53 @@
-
-var findAncestor = require('ancestor')
-var async = require('async')
+import findAncestor from 'ancestor'
+import async from 'async'
 
 function findAncestors(from, to, readParents, cb) {
-  var ancestors = []
-  async.each(from, function(each, cb) {
-    findAncestor([each, to], readParents, function(err, res) {
+  const ancestors = []
+  async.each(from, (each, next) => {
+    findAncestor([each, to], readParents, (err, res) => {
       if (res) ancestors.push(res)
-      cb()
+      next()
     })
-  }, function() {
-    cb(null, ancestors)
-  })
+  }, () => cb(null, ancestors))
 }
 
-// this really has to be rewritten to be tail recursive or stack-based
-// I also want the result to be analog to a breadth-first walk
 function graphDiff(from, to, readParents, cb) {
-  findAncestors(from, to, readParents, function(err, ancestors) {
-    var nodeDiff = []
-    var parents = [to]
-    function whileCondition() {
-      return parents.length == 1 && ancestors.indexOf(parents[0]) == -1
+  findAncestors(from, to, readParents, (err, ancestors) => {
+    const nodeDiff = []
+    let parents = [to]
+
+    function cond() {
+      return parents.length === 1 && ancestors.indexOf(parents[0]) === -1
     }
-    async.whilst(whileCondition, function(cb) {
-      nodeDiff.push(parents[0])
-      readParents(parents[0], function(err, newParents) {
-        parents = newParents || []
-        cb()
-      })
-    }, function() {
-      if (parents.length == 1) {
-        return cb(null, nodeDiff)
-      }
-      var filteredParents = parents.filter(function(each) {
-        return ancestors.indexOf(each) == -1
-      })
-      findAncestor(filteredParents, readParents, function(err, parentsAncestor) {
-        var reduce = function(state, each, cb) {
-          var newFrom = state.length ? from.concat(parentsAncestor) : from
-          graphDiff(newFrom, each, readParents, function(err, res) {
-            cb(null, state.concat(res))
-          })
-        }
-        async.reduce(filteredParents, [], reduce, function(err, res) {
-          cb(null, nodeDiff.concat(res))
+
+    async.whilst(
+      cond,
+      next => {
+        nodeDiff.push(parents[0])
+        readParents(parents[0], (err, newParents) => {
+          parents = newParents || []
+          next()
         })
-      })
-    })
+      },
+      () => {
+        if (parents.length === 1) return cb(null, nodeDiff)
+        const filtered = parents.filter(p => ancestors.indexOf(p) === -1)
+        findAncestor(filtered, readParents, (err, pa) => {
+          async.reduce(
+            filtered,
+            [],
+            (acc, each, next) => {
+              const base = acc.length ? from.concat(pa) : from
+              graphDiff(base, each, readParents, (err, res) => next(null, acc.concat(res)))
+            },
+            (err, res) => cb(null, nodeDiff.concat(res))
+          )
+        })
+      }
+    )
   })
 }
 
-module.exports = function(from, to, readParents, cb) {
+export default function(from, to, readParents, cb) {
   graphDiff([from], to, readParents, cb)
 }

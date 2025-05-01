@@ -2,13 +2,14 @@
   "name": "graph-difference",
   "version": "0.1.0",
   "description": "find the subgraph between two nodes in a directed acyclic graph",
+  "type": "module",
   "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "test": "node_modules/.bin/mocha -R spec"
+    "test": "mocha"
   },
-  "keywords": [
-    "tree"
-  ],
+  "keywords": ["graph", "dag", "diff"],
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
   "license": "BSD",
   "dependencies": {
@@ -16,6 +17,8 @@
     "async": "~0.2.9"
   },
   "devDependencies": {
-    "mocha": "~1.12.0"
+    "mocha": "^10.0.0",
+    "@types/node": "^18.0.0",
+    "@types/async": "^3.2.7"
   }
 }

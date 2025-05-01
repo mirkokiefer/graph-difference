@@ -1,39 +1,96 @@
-#graph-difference
-[![Build Status](https://travis-ci.org/mirkokiefer/graph-difference.png?branch=master)](https://travis-ci.org/mirkokiefer/graph-difference)
+[![npm version](https://img.shields.io/npm/v/graph-difference.js.svg)](https://www.npmjs.com/package/graph-difference.js)
+[![tests](https://github.com/<OWNER>/<REPO>/actions/workflows/test.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions)
 
-[![NPM](https://nodei.co/npm/graph-difference.png)](https://nodei.co/npm/graph-difference/)
+# graph-difference.js
 
-Find the subgraph difference between two nodes in a directed acyclic graph.
+Minimal JavaScript/TypeScript library for directed acyclic graphs (DAGs).  
+Finds the _subgraph difference_ between two nodes: all ancestors of **to** that are not ancestors of **from**.
 
-Given a `node A` the algorithm finds all nodes that are ancestors of `node B` but are not ancestors from `node A`.
+## Install
 
-##Example
-
-The graph:
-
-```
-    4-5-8-9    11-12
-   /   \   \  /     \
-1-2-3---6-7-10-13-14-15-16
+```bash
+npm install graph-difference.js
 ```
 
-``` js
-var graphDiff = require('graph-difference')
+## Usage
 
-var nodes = {
+### ES Module (JavaScript / TypeScript)
+
+```js
+import graphDiff from 'graph-difference.js'
+
+const nodes = {
   1: [],
   2: [1],
-  ...
-  15: [12, 14],
-  16: [15]
+  /* ... */
+  20: [19]
 }
 
-var readParents = function(id, cb) {
-  cb(null, nodes[id])
+const readParents = (id, cb) => {
+  // async fetch of parent IDs
+  cb(null, nodes[id] || [])
 }
 
-graphDiff(5, 7, readParents, function(err, result) {
-  // result should be [7, 6, 3]
+graphDiff(5, 7, readParents, (err, result) => {
+  console.log(result) // [7, 6, 3]
 })
 ```
 
+### CommonJS
+
+```js
+const graphDiff = require('graph-difference.js')
+```
+
+## API
+
+```ts
+function graphDiff<T>(
+  from: T | null,
+  to: T,
+  readParents: (
+    id: T | null,
+    cb: (err: Error | null, parents?: (T | null)[]) => void
+  ) => void,
+  cb: (err: Error | null, res?: (T | null)[]) => void
+): void
+
+export default graphDiff
+```
+
+- **from**: starting node ID (or `null`)  
+- **to**: target node ID  
+- **readParents**: callback to fetch parent IDs of a node  
+- **cb**: callback with error or array of node IDs in difference  
+
+## Example
+
+```js
+import graphDiff from 'graph-difference.js'
+
+const nodes = { A: [], B: ['A'], C: ['A'], D: ['B','C'] }
+const readParents = (id, cb) => cb(null, nodes[id] || [])
+
+graphDiff('B', 'D', readParents, (_, diff) => {
+  // ancestors of D: ['D','B','C','A'], 
+  // ancestors of B: ['B','A'], 
+  // difference: ['D','C']
+  console.log(diff) // [ 'D', 'C' ]
+})
+```
+
+## Testing
+
+Run the suite with:
+
+```bash
+npm test
+```
+
+## TypeScript Support
+
+Built with an included `index.d.ts` — no extra typings needed.  
+
+## License
+
+MIT
