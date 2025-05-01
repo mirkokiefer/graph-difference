@@ -1,4 +1,4 @@
-[![npm version](https://img.shields.io/npm/v/graph-difference.js.svg)](https://www.npmjs.com/package/graph-difference.js)
+[![npm version](https://img.shields.io/npm/v/graph-difference.svg)](https://www.npmjs.com/package/graph-difference)
 [![tests](https://github.com/mirkokiefer/graph-difference/actions/workflows/test.yml/badge.svg)](https://github.com/mirkokiefer/graph-difference/actions)
 
 # graph-difference.js
