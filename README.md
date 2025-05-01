@@ -1,23 +1,31 @@
 [![npm version](https://img.shields.io/npm/v/graph-difference.svg)](https://www.npmjs.com/package/graph-difference)
-[![tests](https://github.com/mirkokiefer/graph-difference/actions/workflows/test.yml/badge.svg)](https://github.com/mirkokiefer/graph-difference/actions)
+[![tests](https://github.com/mirkokiefer/graph-difference.js/actions/workflows/test.yml/badge.svg)](https://github.com/mirkokiefer/graph-difference.js/actions)
 
 # graph-difference.js
 
 Minimal JavaScript/TypeScript library for directed acyclic graphs (DAGs).  
-Finds the _subgraph difference_ between two nodes: all ancestors of **to** that are not ancestors of **from**.
+Finds the _subgraph difference_ between two nodes: all ancestors of `to` that are not ancestors of `from`.
 
 ## Install
 
 ```bash
-npm install graph-difference.js
+npm install graph-difference
 ```
 
 ## Usage
 
+For an example graph:
+
+```
+    4-5-8-9    11-12
+   /   \   \  /     \
+1-2-3---6-7-10-13-14-15-16
+```
+
 ### ES Module (JavaScript / TypeScript)
 
 ```js
-import graphDiff from 'graph-difference.js'
+import graphDiff from 'graph-difference'
 
 const nodes = {
   1: [],
@@ -39,7 +47,7 @@ graphDiff(5, 7, readParents, (err, result) => {
 ### CommonJS
 
 ```js
-const graphDiff = require('graph-difference.js')
+const graphDiff = require('graph-difference')
 ```
 
 ## API
@@ -61,23 +69,7 @@ export default graphDiff
 - **from**: starting node ID (or `null`)  
 - **to**: target node ID  
 - **readParents**: callback to fetch parent IDs of a node  
-- **cb**: callback with error or array of node IDs in difference  
-
-## Example
-
-```js
-import graphDiff from 'graph-difference.js'
-
-const nodes = { A: [], B: ['A'], C: ['A'], D: ['B','C'] }
-const readParents = (id, cb) => cb(null, nodes[id] || [])
-
-graphDiff('B', 'D', readParents, (_, diff) => {
-  // ancestors of D: ['D','B','C','A'], 
-  // ancestors of B: ['B','A'], 
-  // difference: ['D','C']
-  console.log(diff) // [ 'D', 'C' ]
-})
-```
+- **cb**: callback with error or array of node IDs in difference
 
 ## Testing
 
